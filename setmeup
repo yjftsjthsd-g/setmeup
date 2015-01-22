@@ -5,9 +5,44 @@
 set -e
 #set -x
 
-# echo "Shell? (default bash)"
-# read MYSHELL
-# echo "Shell:$MYSHELL"
+# get user to choose yes or no, specify a prompt and optional default
+ynp() {
+	echo -n "$1 "
+	read YN
+	case "$YN" in
+		[Yy]*)
+			return 0
+			;;
+		[Nn]*)
+			return 1
+			;;
+		*)
+			# optionally allow a default
+			if test $# -gt 1
+			then
+				return $2
+			else
+				return 1
+			fi
+			;;
+	esac
+}
+
+setupParameters() {
+	echo "Basic options"
+	echo
+	echo "Shell? (default /bin/bash)"
+	echo "Available options:"
+	chsh -l
+	read MYSHELL
+	if test -z "$MYSHELL"
+	then
+		MYSHELL="/bin/bash"
+	fi
+	USERNAME=`whoami`
+	#echo "MYSHELL=$MYSHELL" >> $HOME/.profile
+	ynp "Confirm: use $MYSHELL as login shell for $USERNAME?" && chsh -s "$MYSHELL" "$USERNAME"
+}
 
 setupProfile() {
 	echo "~/.profile options"
@@ -60,7 +95,7 @@ setupProfile() {
 	fi
 }
 
-setupbashrc() {
+setupBashrc() {
 	echo "Enable autocompletion on sudo? (default yes)"
 	read AUTOCOMPLETESUDO
 	if test "$AUTOCOMPLETESUDO" = "yes"
@@ -92,7 +127,7 @@ setupxinitrc() {
 		echo "setxkbmap -layout us -option ctrl:nocaps" >> $HOME/.xinitrc
 	fi
 
-	
+
 }
 
 unusedStuff() {
@@ -139,8 +174,39 @@ mainMenu() {
 	echo '1. Set up ~/.profile'
 	echo '2. Set up ~/.bashrc'
 	echo '3. Set up ~/.vimrc'
-	echo '4. Set up ~/.inputrc'
-	echo '5. Celebrate and exit'
-}
+	echo '4. Set up ~/.xinitrc'
+	echo '5. Set up ~/.inputrc'
+	echo '6. Celebrate and exit'
+	echo 'Please choose which section you wish to use'
+	read MENUCHOICE
+	case $MENUCHOICE in
+		0)
+			setupParameters
+			;;
+		1)
+			setupProfile
+			;;
+		2)
+			setupBashrc
+			;;
+		3)
+			setupVimrc
+			;;
+		4)
+			setupXinitrc
+			;;
+		5)
+			setupInputrc
+			;;
+		6)
+			echo "Yay! Bye!"
+			exit 0
+			;;
+		*)
+			echo "Valid options are 1-5"
+			;;
 
-mainMenu
+		esac
+	}
+
+	mainMenu
