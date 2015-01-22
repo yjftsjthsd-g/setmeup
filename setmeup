@@ -96,27 +96,15 @@ setupProfile() {
 }
 
 setupBashrc() {
-	echo "Enable autocompletion on sudo? (default yes)"
-	read AUTOCOMPLETESUDO
-	if test "$AUTOCOMPLETESUDO" = "yes"
-	then
+	ynp "Enable autocompletion on sudo? (default yes)" &&
 		echo "complete -cf sudo" >> $HOME/.bashrc
-	fi
-	echo "Enable autocompletion on man? (default yes)"
-	read AUTOCOMPLETEMAN
-	if test "$AUTOCOMPLETEMAN" = "yes"
-	then
+	ynp "Enable autocompletion on man? (default yes)" &&
 		echo "complete -cf man" >> $HOME/.bashrc
-	fi
-	echo "Use arrow keys to search history? (default yes)"
-	read HISTORYARROWKEYS
-	if test "$HISTORYARROWKEYS" = "yes"
-	then
-		echo "# from HN user jackalope, https://news.ycombinator.com/item?id=8612491" >> $HOME/.bashrc
-		echo "# Use up/down arrows to search on partially typed command" >> $HOME/.bashrc
-		echo "bind '"\e[A"':history-search-backward" >> $HOME/.bashrc
-		echo "bind '"\e[B"':history-search-forward" >> $HOME/.bashrc
-	fi
+	ynp "Use arrow keys to search history? (default yes)" &&
+		( echo "# from HN user jackalope, https://news.ycombinator.com/item?id=8612491" >> $HOME/.bashrc ;
+		echo "# Use up/down arrows to search on partially typed command" >> $HOME/.bashrc ;
+		echo "bind '"\e[A"':history-search-backward" >> $HOME/.bashrc ;
+		echo "bind '"\e[B"':history-search-forward" >> $HOME/.bashrc ; )
 }
 
 setupxinitrc() {
