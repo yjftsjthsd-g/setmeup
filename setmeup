@@ -1,6 +1,6 @@
 #!/bin/sh
 # setmeup sets up a system for use
-# by Brian Cole, 2015-01-11
+# by Brian Cole, 2015
 
 set -e
 #set -x
