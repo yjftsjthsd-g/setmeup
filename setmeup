@@ -1,0 +1,146 @@
+#!/bin/sh
+# setmeup sets up a system for use
+# by Brian Cole, 2015-01-11
+
+set -e
+#set -x
+
+# echo "Shell? (default bash)"
+# read MYSHELL
+# echo "Shell:$MYSHELL"
+
+setupProfile() {
+	echo "~/.profile options"
+	echo
+	echo "HISTSIZE (default 2500)"
+	read HISTSIZE
+	if test -z "$HISTSIZE"
+	then
+		HISTSIZE=2500
+	fi
+	echo "HISTSIZE=$HISTSIZE" >> $HOME/.profile
+
+	echo "EDITOR (default vim)"
+	read EDITOR
+	if test -z "$EDITOR"
+	then
+		EDITOR=vim
+	fi
+	echo "EDITOR=$EDITOR" >> $HOME/.profile
+
+	echo "Add ~/.local/bin to PATH? (default yes)"
+	read ADDLOCALBINPATH
+	if test ! "$ADDLOCALBINPATH" = "no"
+	then
+		echo 'export PATH=$PATH:~/.local/bin' >> $HOME/.profile
+	fi
+
+	echo "Add ls/ll/la aliases? (default yes)"
+	read ADDLSALIASES
+	if test ! "$ADDLSALIASES" = "no"
+	then
+		echo "alias ls='ls --color=auto'" >> $HOME/.profile
+		echo "alias ll='ls --color=auto -l'" >> $HOME/.profile
+		echo "alias la='ls --color=auto -a'" >> $HOME/.profile
+	fi
+
+
+	echo "Add tmux auto-attach alias? (default yes)"
+	read ADDLSALIASES
+	if test ! "$ADDLSALIASES" = "no"
+	then
+		echo "alias tmux='tmux attach || tmux'" >> $HOME/.profile
+	fi
+
+	echo "Add alias to auto-zoom in feh? (default no)"
+	read ADDLSALIASES
+	if test "$ADDLSALIASES" = "yes"
+	then
+		echo "alias feh='feh --auto-zoom'" >> $HOME/.profile
+	fi
+}
+
+setupbashrc() {
+	echo "Enable autocompletion on sudo? (default yes)"
+	read AUTOCOMPLETESUDO
+	if test "$AUTOCOMPLETESUDO" = "yes"
+	then
+		echo "complete -cf sudo" >> $HOME/.bashrc
+	fi
+	echo "Enable autocompletion on man? (default yes)"
+	read AUTOCOMPLETEMAN
+	if test "$AUTOCOMPLETEMAN" = "yes"
+	then
+		echo "complete -cf man" >> $HOME/.bashrc
+	fi
+	echo "Use arrow keys to search history? (default yes)"
+	read HISTORYARROWKEYS
+	if test "$HISTORYARROWKEYS" = "yes"
+	then
+		echo "# from HN user jackalope, https://news.ycombinator.com/item?id=8612491" >> $HOME/.bashrc
+		echo "# Use up/down arrows to search on partially typed command" >> $HOME/.bashrc
+		echo "bind '"\e[A"':history-search-backward" >> $HOME/.bashrc
+		echo "bind '"\e[B"':history-search-forward" >> $HOME/.bashrc
+	fi
+}
+
+setupxinitrc() {
+	echo "Remap caps lock to another control key? (default no)"
+	read CAPSCONTROL
+	if test "$CAPSCONTROL" = "yes"
+	then
+		echo "setxkbmap -layout us -option ctrl:nocaps" >> $HOME/.xinitrc
+	fi
+
+	
+}
+
+unusedStuff() {
+
+	exit 0
+
+	source $HOME/.local/etc/bashrc.common
+
+	#PROMPT_COMMAND="history -a;" #I think Paul came up with this?
+	#from http://david.newgas.net/return_code/
+	# export PROMPT_COMMAND='ret=$?; if [ $ret -ne 0 ] ; then echo -e "returned \033[01;31m$ret\033[00;00m"; fi'
+	#and hybridized with history stuff:
+	PROMPT_COMMAND='ret=$?; if [ $ret -ne 0 ] ; then echo -e "returned \033[01;31m$ret\033[00;00m"; fi; history -a; '
+
+	export TERMINAL=lxterminal
+	#export BROWSER=firefox
+	export GTK2_RC_FILES="$HOME/.gtkrc-2.0" # Gtk themes 
+
+	export PATH=$PATH:/opt/android-sdk/platform-tools
+	export CDPATH=":/home/brian/Dropbox/Programming/:/home/brian/Dropbox/School/2014_15/fall/:/home/brian/Dropbox/School/2014_15/interim/"
+	export PYTHONPATH="/home/brian/.local/lib/cs344/src"
+
+	export MANPAGER="/bin/bash -c \"col -b | vman - \""
+
+
+
+	shopt -s nocaseglob
+
+	# directly from https://github.com/joejag/dotfiles/blob/master/bash/prompt
+	DULL_GREEN="\[\e[0;32m\]"
+	BRIGHT_GREEN="\[\e[1;32m\]"
+	BRIGHT_BLUE="\[\e[1;34m\]"
+	BRIGHT_WHITE="\[\e[1;37m\]"
+	END_COLOR="\[\e[m\]"
+	# Green hostname, Blue absolute directory, $ prompt, White text
+	PS1="$DULL_GREEN\h$END_COLOR $BRIGHT_BLUE\w$END_COLOR $BRIGHT_GREEN\$$END_COLOR $BRIGHT_WHITE"
+
+	date
+}
+
+mainMenu() {
+	echo "Welcome to Brian's setup script"
+	echo '0. Set up $HOME and shell'
+	echo '1. Set up ~/.profile'
+	echo '2. Set up ~/.bashrc'
+	echo '3. Set up ~/.vimrc'
+	echo '4. Set up ~/.inputrc'
+	echo '5. Celebrate and exit'
+}
+
+mainMenu
