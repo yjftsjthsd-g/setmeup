@@ -41,6 +41,7 @@ setupParameters() {
 	fi
 	USERNAME=`whoami`
 	#echo "MYSHELL=$MYSHELL" >> $HOME/.profile
+	#TODO sanity check and gracefully handle erroneous input
 	ynp "Confirm: use $MYSHELL as login shell for $USERNAME?" && chsh -s "$MYSHELL" "$USERNAME"
 }
 
