@@ -112,7 +112,13 @@ setupxinitrc() {
 	read CAPSCONTROL
 	if test "$CAPSCONTROL" = "yes"
 	then
-		echo "setxkbmap -layout us -option ctrl:nocaps" >> $HOME/.xinitrc
+		echo "setxkbmap -option ctrl:nocaps" >> $HOME/.xinitrc
+	fi
+	echo "Toggle caps-lock by pressing both shift keys together? (default no)"
+	read CAPSCONTROL
+	if test "$CAPSCONTROL" = "yes"
+	then
+		echo " setxkbmap -option shift:both_capslock" >> $HOME/.xinitrc
 	fi
 
 
