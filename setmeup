@@ -108,20 +108,11 @@ setupBashrc() {
 }
 
 setupxinitrc() {
-	echo "Remap caps lock to another control key? (default no)"
-	read CAPSCONTROL
-	if test "$CAPSCONTROL" = "yes"
-	then
+	ynp "Remap caps lock to another control key? (default no)" 1 &&
 		echo "setxkbmap -option ctrl:nocaps" >> $HOME/.xinitrc
-	fi
-	echo "Toggle caps-lock by pressing both shift keys together? (default no)"
-	read CAPSCONTROL
-	if test "$CAPSCONTROL" = "yes"
-	then
+
+	ynp "Toggle caps-lock by pressing both shift keys together? (default no)" 1 &&
 		echo " setxkbmap -option shift:both_capslock" >> $HOME/.xinitrc
-	fi
-
-
 }
 
 unusedStuff() {
