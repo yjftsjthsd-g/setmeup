@@ -64,12 +64,8 @@ setupProfile() {
 	fi
 	echo "EDITOR=$EDITOR" >> $HOME/.profile
 
-	echo "Add ~/.local/bin to PATH? (default yes)"
-	read ADDLOCALBINPATH
-	if test ! "$ADDLOCALBINPATH" = "no"
-	then
+	ynp "Add ~/.local/bin to PATH? (default yes)" 0 &&
 		echo 'export PATH=$PATH:~/.local/bin' >> $HOME/.profile
-	fi
 
 	echo "Add ls/ll/la aliases? (default yes)"
 	read ADDLSALIASES
@@ -81,19 +77,11 @@ setupProfile() {
 	fi
 
 
-	echo "Add tmux auto-attach alias? (default yes)"
-	read ADDLSALIASES
-	if test ! "$ADDLSALIASES" = "no"
-	then
+	ynp "Add tmux auto-attach alias? (default yes)" 0 &&
 		echo "alias tmux='tmux attach || tmux'" >> $HOME/.profile
-	fi
 
-	echo "Add alias to auto-zoom in feh? (default no)"
-	read ADDLSALIASES
-	if test "$ADDLSALIASES" = "yes"
-	then
+	ynp "Add alias to auto-zoom in feh? (default no)" 1 &&
 		echo "alias feh='feh --auto-zoom'" >> $HOME/.profile
-	fi
 }
 
 setupBashrc() {
@@ -109,14 +97,11 @@ setupBashrc() {
 }
 
 setupxinitrc() {
-	echo "Remap caps lock to another control key? (default no)"
-	read CAPSCONTROL
-	if test "$CAPSCONTROL" = "yes"
-	then
-		echo "setxkbmap -layout us -option ctrl:nocaps" >> $HOME/.xinitrc
-	fi
+	ynp "Remap caps lock to another control key? (default no)" 1 &&
+		echo "setxkbmap -option ctrl:nocaps" >> $HOME/.xinitrc
 
-
+	ynp "Toggle caps-lock by pressing both shift keys together? (default no)" 1 &&
+		echo " setxkbmap -option shift:both_capslock" >> $HOME/.xinitrc
 }
 
 unusedStuff() {
